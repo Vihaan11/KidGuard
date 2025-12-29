@@ -1,0 +1,7 @@
+{
+  "name": "CCTV Guardian AI",
+  "description": "An intelligent security monitor that analyzes CCTV screenshots to identify locations, detect specific subjects like children, and monitor their activities with customizable rules.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
