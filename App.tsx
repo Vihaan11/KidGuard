@@ -1,10 +1,10 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { AnalysisSettings, AnalysisResult, ImageFile } from './types';
-import { DEFAULT_SETTINGS } from './constants';
-import { analyzeScreenshots } from './services/geminiService';
-import SettingsPanel from './components/SettingsPanel';
-import ResultCard from './components/ResultCard';
+import { AnalysisSettings, AnalysisResult, ImageFile } from './types.ts';
+import { DEFAULT_SETTINGS } from './constants.ts';
+import { analyzeScreenshots } from './services/geminiService.ts';
+import SettingsPanel from './components/SettingsPanel.tsx';
+import ResultCard from './components/ResultCard.tsx';
 
 const App: React.FC = () => {
   const [settings, setSettings] = useState<AnalysisSettings>(DEFAULT_SETTINGS);
@@ -15,12 +15,9 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // AutoInput compatibility: Handle incoming share files or direct navigation
   useEffect(() => {
-    // Check for hash-based share handling
     if (window.location.hash === '#share') {
-      // In a real PWA context, the data would come via the service worker
-      // For this implementation, we just ensure the UI is ready
+      // Logic for handling shared files can be added here
     }
   }, []);
 
@@ -28,7 +25,6 @@ const App: React.FC = () => {
     const files = e.target.files;
     if (!files) return;
 
-    // Fix: Explicitly cast to File[] to ensure correct type inference for map callback
     const newImages: ImageFile[] = (Array.from(files) as File[]).map(file => ({
       id: Math.random().toString(36).substr(2, 9),
       file,
@@ -72,7 +68,6 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-slate-950 px-4 py-8 md:py-12 font-sans selection:bg-blue-500 selection:text-white">
-      {/* Header */}
       <header className="w-full max-w-4xl flex justify-between items-center mb-8">
         <div className="flex items-center gap-3">
           <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-900/40">
@@ -89,7 +84,6 @@ const App: React.FC = () => {
         <button 
           onClick={() => setShowSettings(true)}
           id="btn_open_settings"
-          aria-label="Settings"
           className="p-3 bg-slate-900 border border-slate-800 rounded-xl hover:bg-slate-800 transition-colors text-slate-400 hover:text-white"
         >
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -100,7 +94,6 @@ const App: React.FC = () => {
       </header>
 
       <main className="w-full max-w-2xl space-y-6 flex-grow">
-        {/* Upload Area */}
         <section className={`p-1 rounded-3xl bg-gradient-to-b from-slate-800 to-slate-900 border border-slate-700/50 shadow-2xl transition-all ${isAnalyzing ? 'opacity-50 pointer-events-none' : ''}`}>
           <div className="bg-slate-900 rounded-[1.4rem] p-6">
             <input 
@@ -136,7 +129,6 @@ const App: React.FC = () => {
                       <button 
                         onClick={() => removeImage(img.id)}
                         className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
-                        aria-label="Remove image"
                       >
                         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -160,9 +152,6 @@ const App: React.FC = () => {
                     id="btn_analyze"
                     className="flex-grow bg-blue-600 hover:bg-blue-500 text-white font-bold py-4 rounded-xl transition-all shadow-xl shadow-blue-900/30 flex items-center justify-center gap-2"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-                    </svg>
                     Analyze Best Screenshot
                   </button>
                   <button 
@@ -178,7 +167,6 @@ const App: React.FC = () => {
           </div>
         </section>
 
-        {/* Loading State */}
         {isAnalyzing && (
           <div className="flex flex-col items-center justify-center py-12 space-y-4" id="loading_state">
             <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
@@ -186,20 +174,14 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Error State */}
         {error && (
           <div className="bg-red-500/10 border border-red-500/50 p-4 rounded-xl text-red-200 text-sm flex items-center gap-3" id="error_message">
-            <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
             {error}
           </div>
         )}
 
-        {/* Result Area */}
         {result && !isAnalyzing && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {/* Show the best image found by AI */}
             <div className="mb-4 text-center">
               <span className="text-[10px] text-slate-500 uppercase font-bold tracking-[0.2em] mb-2 block">AI Selection: Image #{result.bestImageIndex + 1}</span>
               <div className="relative inline-block rounded-2xl overflow-hidden border-2 border-blue-500/30">
@@ -215,7 +197,6 @@ const App: React.FC = () => {
         )}
       </main>
 
-      {/* Settings Modal */}
       {showSettings && (
         <SettingsPanel 
           settings={settings} 
@@ -223,15 +204,6 @@ const App: React.FC = () => {
           onClose={() => setShowSettings(false)} 
         />
       )}
-
-      {/* Footer / Status Bar for AutoInput */}
-      <footer className="w-full max-w-4xl mt-12 pt-8 border-t border-slate-900 text-center">
-        <p className="text-slate-600 text-xs">
-          AutoInput ID references: <span className="bg-slate-900 px-1.5 py-0.5 rounded">btn_analyze</span>, 
-          <span className="bg-slate-900 px-1.5 py-0.5 rounded ml-1">analysis_result_container</span>,
-          <span className="bg-slate-900 px-1.5 py-0.5 rounded ml-1">result_activity</span>
-        </p>
-      </footer>
     </div>
   );
 };
